@@ -1,0 +1,98 @@
+＊言語ごとの説明
+
+PHP...都道府県のボタンを出すコードです。都道府県のボタンは地方ごとに再利用可能ブロックとしてWordPress 側で保存されています。
+
+HTML...地方を選択するコードです。
+
+CSS... スマートフォンでも見やすくしています。kadai_right とは、 プルダウンリストと都道府県のボタンがある部分です。
+
+以下、ソースコード
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+（PHP）
+
+<?php
+//リファレンス：https://wordpress.org/support/topic/reusable-block-in-single-php/, https://engineering.dn-voice.info/blogwordpress/postmessage/
+
+function buttons($number){
+//ボタンの再利用可能ブロックを返す(id(数字)で指定)
+	$reuse_block = get_post($number);
+	$reuse_block_content = apply_filters('the_content',	$reuse_block->post_content);
+	ob_start();
+	echo $reuse_block_content;
+	return ob_get_clean();
+};
+//地方リストから選択されたものを表示
+function select_region(){
+	if($_SERVER["REQUEST_METHOD"] === "POST"){
+		if ($_POST["list"] == "hokkai") {
+			return buttons(169);
+
+		} elseif ($_POST["list"] == "tohok") {
+			return buttons(170);
+
+		} elseif ($_POST["list"] == "tyubu") {
+			return buttons(174);
+
+		} elseif ($_POST["list"] == "kanto") {
+			return buttons(173);
+
+		} elseif ($_POST["list"] == "kinki") {
+			return buttons(175);
+
+		} elseif ($_POST["list"] == "tyubu") {
+			return buttons(174);
+
+		} elseif ($_POST["list"] == "tyugok") {
+			return buttons(176);
+
+		} elseif ($_POST["list"] == "sikok") {
+			return buttons(177);
+
+		} elseif ($_POST["list"] == "kyusyu") {
+			return buttons(178);
+
+		}
+	}
+	return buttons(126);
+};
+add_shortcode("s_reg","select_region");
+?>
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+(HTML)
+
+<form action="" method="post">
+<select name="list" onchange="submit(this.form)">
+<option>地方を選択してください。</option>
+<option value="hokkai">北海道地方</option>
+<option value="tohok">東北地方</option>
+<option value="tyubu">中部地方</option>
+<option value="kanto">関東地方</option>
+<option value="kinki">近畿地方</option>
+<option value="tyugok">中国地方</option>
+<option value="sikok">四国地方</option>
+<option value="kyusyu">九州地方</option>
+</select></form><br>
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+（CSS）
+
+.kadai_right {
+	font-size: 100%;
+	margin-right: 5%;
+	margin-left: 5%;
+}
+
+@media(max-width: 767px){
+	.kadai_right {
+		margin-right: 15%;
+		margin-left: 15%;
+		text-align: center;
+	}
+}
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+	
